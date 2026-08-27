@@ -176,6 +176,8 @@ export interface Account {
 }
 
 export interface AccountsResponse {
+  mode?: 'hosted'
+  providers?: ['codex']
   accounts: Account[]
 }
 

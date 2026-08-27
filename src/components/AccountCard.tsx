@@ -8,6 +8,8 @@ import { formatRelativeTime, formatSubscriptionStatus } from '../lib/utils'
 import { useRefreshSlot } from '../lib/hooks'
 import { toast } from 'sonner'
 
+const HOSTED_MODE = import.meta.env.VITE_HOSTED_MODE === 'netlify'
+
 export function AccountCard({ account }: { account: Account }) {
   const refreshSlot = useRefreshSlot()
   const windows = account.usage?.windows ?? []
@@ -17,8 +19,8 @@ export function AccountCard({ account }: { account: Account }) {
   const summary = account.usage?.summary
   const plan = account.usage?.plan ?? account.planTypeFromJwt
   const subStatus = formatSubscriptionStatus(account.entitlement)
-  const isClaude = account.provider === 'claude-code'
-  const isOpenCodeGo = account.provider === 'opencode-go'
+  const isClaude = !HOSTED_MODE && account.provider === 'claude-code'
+  const isOpenCodeGo = !HOSTED_MODE && account.provider === 'opencode-go'
   const title = isClaude ? 'Claude Code' : isOpenCodeGo ? 'OpenCode Go' : (account.email ?? 'Unknown')
   const detail = isClaude || isOpenCodeGo
     ? [account.email, account.orgName].filter(Boolean).join(' · ')

@@ -4,6 +4,18 @@ A self-hosted dashboard for tracking ChatGPT / Codex subscription limits. It sho
 
 Claude Code, Cursor, and OpenCode Go can be shown as secondary integrations, but Codex is the main focus.
 
+## Deploy to Netlify
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/OldKrab/codex-usage)
+
+This creates a personal, Codex-only hosted dashboard. Netlify private-project owner login is the access control; there is no separate dashboard password. Teams created on or after 2026-07-28 default to Private for new projects. **Older teams must verify Project configuration → General → Visitor access → Project visibility = Private before connecting an account.** Do not connect ChatGPT while the project is public.
+
+The hosted target stores OAuth credentials, settings, account records, pending login state, and history in site-wide Netlify Blobs storage, which is available on Netlify Free. Sensitive runtime state is never written into the repository or deployment filesystem. Per-account records use conditional writes, and history uses immutable time-bucket keys so concurrent browser and scheduled refreshes cannot overwrite a whole shared state file.
+
+Netlify refreshes connected Codex accounts every 15 minutes and records history; live browser refresh remains configurable. Because OpenAI's OAuth redirect remains a localhost URL, complete hosted sign-in by copying the callback URL from the browser address bar and pasting it into the dashboard. The Netlify edition does not load or expose Claude Code, Cursor, OpenCode Go, or Telegram integrations; those remain available only in local self-hosted mode.
+
+Normal personal use is designed for the Netlify Free plan, but usage still counts against the team's monthly Netlify credits. Netlify applies a hard stop when Free credits are exhausted.
+
 ## Codex monitoring
 
 - Connect one or more ChatGPT accounts through OAuth.
@@ -24,7 +36,7 @@ The ingestion layer guards against transient provider regressions, such as a quo
 - **Cursor:** reads the local Cursor Agent session when available and combines live usage with manually entered subscription details.
 - **OpenCode Go:** reads local OpenCode state or configured credentials. Disabled by default.
 
-## Setup
+## Self-hosted setup
 
 Requirements: Node.js 22.19 or newer.
 
@@ -50,7 +62,7 @@ http://localhost:$PORT/auth/callback
 
 If the dashboard runs on another machine or behind a domain, the localhost redirect cannot reach it directly. After authorization, copy the callback URL from the browser address bar and paste it into the dashboard's manual callback field.
 
-OAuth access and refresh tokens are stored locally in `data/accounts.json`. The entire `data/` directory is excluded from Git.
+In self-hosted mode, OAuth access and refresh tokens are stored locally in `data/accounts.json`. The entire `data/` directory is excluded from Git. Netlify deployments do not use this file; they store account data and credentials in site-wide Netlify Blobs.
 
 ## Configuration
 
@@ -88,7 +100,9 @@ Set both variables to receive a warning when Codex usage crosses the configured 
 | `CURSOR_AUTH_PATH` | Cursor Agent auth file |
 | `CURSOR_ACCESS_TOKEN` | Optional Cursor access-token override |
 
-## Local data
+## Self-hosted local data
+
+These files apply only to self-hosted mode. Netlify deployments use site-wide Netlify Blobs instead of `data/accounts.json` or the other local runtime files.
 
 | File | Contents |
 |---|---|

@@ -2,6 +2,8 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { Timer, Check, ChevronDown } from 'lucide-react'
 import { useSettings, useUpdateSettings } from '../lib/hooks'
 
+const HOSTED_MODE = import.meta.env.VITE_HOSTED_MODE === 'netlify'
+
 const LIVE_INTERVALS = [
   { label: 'Off', value: 0 },
   { label: '10s', value: 10 },
@@ -52,20 +54,22 @@ export function RefreshPicker() {
               {live === value && <Check className="w-3.5 h-3.5 text-accent" />}
             </DropdownMenu.Item>
           ))}
-          <DropdownMenu.Separator className="h-px bg-white/[0.06] my-1" />
-          <DropdownMenu.Label className="px-3 py-1.5 text-[11px] font-medium text-text-muted/60 uppercase tracking-wider">
-            Background
-          </DropdownMenu.Label>
-          {BG_INTERVALS.map(({ label, value }) => (
-            <DropdownMenu.Item
-              key={`bg-${value}`}
-              onSelect={() => updateSettings.mutate({ backgroundInterval: value })}
-              className="flex min-h-11 items-center justify-between px-3 py-2 text-sm rounded-md cursor-pointer outline-none hover:bg-white/[0.06] focus:bg-white/[0.06]"
-            >
-              <span>{label}</span>
-              {bg === value && <Check className="w-3.5 h-3.5 text-accent" />}
-            </DropdownMenu.Item>
-          ))}
+          {!HOSTED_MODE && <>
+            <DropdownMenu.Separator className="h-px bg-white/[0.06] my-1" />
+            <DropdownMenu.Label className="px-3 py-1.5 text-[11px] font-medium text-text-muted/60 uppercase tracking-wider">
+              Background
+            </DropdownMenu.Label>
+            {BG_INTERVALS.map(({ label, value }) => (
+              <DropdownMenu.Item
+                key={`bg-${value}`}
+                onSelect={() => updateSettings.mutate({ backgroundInterval: value })}
+                className="flex min-h-11 items-center justify-between px-3 py-2 text-sm rounded-md cursor-pointer outline-none hover:bg-white/[0.06] focus:bg-white/[0.06]"
+              >
+                <span>{label}</span>
+                {bg === value && <Check className="w-3.5 h-3.5 text-accent" />}
+              </DropdownMenu.Item>
+            ))}
+          </>}
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
