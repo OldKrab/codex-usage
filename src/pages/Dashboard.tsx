@@ -5,6 +5,8 @@ import { EmptyCard } from '../components/EmptyCard'
 import { AddCard } from '../components/AddCard'
 import { CursorCard } from '../components/CursorCard'
 
+const HOSTED_MODE = import.meta.env.VITE_HOSTED_MODE === 'netlify'
+
 export function Dashboard() {
   const { data, isLoading } = useAccounts()
   useLiveRefresh()
@@ -30,7 +32,7 @@ export function Dashboard() {
                 ? <AccountCard key={account.slot} account={account} />
                 : <EmptyCard key={account.slot} account={account} />
             )}
-            <CursorCard />
+            {!HOSTED_MODE && <CursorCard />}
             <AddCard />
           </div>
         )}
