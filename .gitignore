@@ -1,0 +1,13 @@
+node_modules/
+data/
+dist/
+public-old/
+
+# Local agent/runtime configuration and transparent-proxy deployment files
+.env
+.env.*
+!.env.example
+.claude/
+.codex
+codex-tproxy*
+codex-xray-tproxy*
